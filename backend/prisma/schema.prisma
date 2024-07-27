@@ -15,6 +15,7 @@ model Company {
   email     String    @unique
   password  String
   users     User[]
+  image_url String?
   createdAt DateTime? @default(now())
   updatedAt DateTime? @default(now())
 
@@ -33,6 +34,7 @@ model User {
   transactions Transaction[]
   accounts     Account[]
   categories   Category[]
+  image_url    String?
   createdAt    DateTime?     @default(now())
   updatedAt    DateTime?     @default(now())
 
