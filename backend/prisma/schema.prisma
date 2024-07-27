@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // ou outro banco de dados de sua escolha
+  url      = env("DATABASE_URL")
+}
+
+/// Representa uma empresa no sistema
+model Company {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  taxId     String    @unique
+  email     String    @unique
+  password  String
+  users     User[]
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @default(now())
+
+  @@map("companies")
+}
+
+/// Representa um usuário no sistema
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  companyId    Int
+  company      Company       @relation(fields: [companyId], references: [id])
+  isAdmin      Boolean       @default(false)
+  transactions Transaction[]
+  accounts     Account[]
+  categories   Category[]
+  createdAt    DateTime?     @default(now())
+  updatedAt    DateTime?     @default(now())
+
+  @@map("users")
+}
+
+/// Representa uma categoria de transações
+model Category {
+  id           Int           @id @default(autoincrement())
+  name         String
+  description  String?
+  image_url    String?
+  userId       Int           @map("user_id")
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+  created_at   DateTime?     @default(now())
+  updated_at   DateTime?     @default(now())
+
+  @@map("categories")
+}
+
+enum ExpenseType {
+  INCOME
+  EXPENSE
+}
+
+/// Representa uma transação financeira
+model Transaction {
+  id              Int         @id @default(autoincrement())
+  description     String
+  value           Float
+  date            DateTime
+  transactionType ExpenseType
+  categoryId      Int
+  accountId       Int
+  userId          Int
+  category        Category    @relation(fields: [categoryId], references: [id])
+  account         Account     @relation(fields: [accountId], references: [id])
+  user            User        @relation(fields: [userId], references: [id])
+  createdAt       DateTime?   @default(now())
+  updatedAt       DateTime?   @default(now())
+
+  @@map("transactions")
+}
+
+/// Representa uma conta financeira
+model Account {
+  id           Int           @id @default(autoincrement())
+  name         String
+  balance      Float
+  userId       Int           @map("user_id")
+  user         User          @relation(fields: [userId], references: [id])
+  is_private   Boolean       @default(true)
+  image_url    String?
+  transactions Transaction[]
+  created_at   DateTime?     @default(now())
+  updated_at   DateTime?     @default(now())
+
+  @@map("accounts")
+}
