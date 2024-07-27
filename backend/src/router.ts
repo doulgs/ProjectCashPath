@@ -15,6 +15,7 @@ import { CreateCategoryController } from "./controllers/categories/CreateCategor
 import { ListCategoryController } from "./controllers/categories/ListCategoryController";
 import { CreateAccountController } from "./controllers/accounts/CreateAccountController";
 import { ListAccountController } from "./controllers/accounts/ListAccountController";
+import { CreateTransactionController } from "./controllers/transactions/CreateTransactionController";
 
 const router = Router();
 
@@ -35,5 +36,12 @@ router.get("/user/category/list", isUserAuth, new ListCategoryController().handl
 // Rotas para manipulação das contas
 router.post("/user/account/create", isUserAuth, new CreateAccountController().handle);
 router.get("/user/account/list", isUserAuth, new ListAccountController().handle);
+
+// Rotas para manipulação das transacoes
+router.post(
+  "/user/transaction/create",
+  isUserAuth,
+  new CreateTransactionController().handle
+);
 
 export { router };
