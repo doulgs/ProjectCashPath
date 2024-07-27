@@ -48,7 +48,7 @@ export type TransactionType = {
   value: number;
   date: Date;
   transactionType: ExpenseType;
-  categoryIdType: number;
+  categoryId: number;
   accountId: number;
   userId: number;
   category: CategoryType;
