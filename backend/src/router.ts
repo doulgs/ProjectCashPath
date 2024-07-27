@@ -1,9 +1,10 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+
+import { CreateCompanyController } from "./controllers/companies/CreateCompanyController";
 
 const router = Router();
 
-router.get("/test", (req: Request, res: Response) => {
-  return res.json({ ok: true });
-});
+// Rotas para manipulação das empresas
+router.post("/company", new CreateCompanyController().handle);
 
 export { router };
