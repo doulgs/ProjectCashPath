@@ -16,6 +16,9 @@ import { ListCategoryController } from "./controllers/categories/ListCategoryCon
 import { CreateAccountController } from "./controllers/accounts/CreateAccountController";
 import { ListAccountController } from "./controllers/accounts/ListAccountController";
 import { CreateTransactionController } from "./controllers/transactions/CreateTransactionController";
+import { DetailTransactionController } from "./controllers/transactions/DetailTransactionController";
+import { ListByDayTransactionController } from "./controllers/transactions/listByDayTransactionController";
+import { ListByMonthTransactionController } from "./controllers/transactions/listByMonthTransactionController";
 
 const router = Router();
 
@@ -42,6 +45,21 @@ router.post(
   "/user/transaction/create",
   isUserAuth,
   new CreateTransactionController().handle
+);
+router.get(
+  "/user/transaction/detail",
+  isUserAuth,
+  new DetailTransactionController().handle
+);
+router.get(
+  "/user/transaction/listDay",
+  isUserAuth,
+  new ListByDayTransactionController().handle
+);
+router.get(
+  "/user/transaction/listMonth",
+  isUserAuth,
+  new ListByMonthTransactionController().handle
 );
 
 export { router };
