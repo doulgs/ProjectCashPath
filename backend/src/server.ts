@@ -25,5 +25,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// Inicia o servidor
-app.listen(3333, () => console.log("CashPath server online"));
+// INICIAR O SERVIDOR EM UM IP
+app.listen(3333, "192.168.1.63", () => console.log("CashPath server online"));
+
+// LOCALHOST
+// app.listen(3333, () => console.log("CashPath server online"));
