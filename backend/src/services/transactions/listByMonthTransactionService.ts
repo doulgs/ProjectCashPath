@@ -11,15 +11,21 @@ class ListByMonthTransactionService {
   async execute({ date, userId }: TransactionsByMonthParams) {
     try {
       // Converte a string de data para um objeto Date
-      const providedDate = new Date(date);
+      const providedDate = new Date(date); // Data atual
 
-      // Define o primeiro e o último dia do mês da data fornecida
-      const startDate = new Date(providedDate.getFullYear(), providedDate.getMonth(), 1);
-      const endDate = new Date(
-        providedDate.getFullYear(),
-        providedDate.getMonth() + 1,
-        1
+      // Define o primeiro dia do mês da data fornecida
+      const startDate = new Date(
+        Date.UTC(providedDate.getUTCFullYear(), providedDate.getUTCMonth(), 1)
       );
+
+      // Define o último dia do mês da data fornecida
+      const endDate = new Date(
+        Date.UTC(providedDate.getUTCFullYear(), providedDate.getUTCMonth() + 1, 0)
+      );
+
+      console.log(providedDate, "providedDate");
+      console.log(startDate, "startDate");
+      console.log(endDate, "endDate");
 
       // Busca todas as transações no mês especificado e do usuário especificado
       const transactions = await prismaClient.transaction.findMany({
