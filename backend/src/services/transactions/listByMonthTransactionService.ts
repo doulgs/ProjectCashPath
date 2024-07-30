@@ -10,8 +10,18 @@ type TransactionsByMonthParams = {
 class ListByMonthTransactionService {
   async execute({ date, userId }: TransactionsByMonthParams) {
     try {
+      // Verifica se a data fornecida está no formato correto
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return { error: "Invalid date format. Expected format is 'YYYY-MM-DD'" };
+      }
+
       // Converte a string de data para um objeto Date
-      const providedDate = new Date(date); // Data atual
+      const providedDate = new Date(date);
+
+      // Verifica se a data fornecida é válida
+      if (isNaN(providedDate.getTime())) {
+        return { error: "Invalid date provided" };
+      }
 
       // Define o primeiro dia do mês da data fornecida
       const startDate = new Date(
@@ -20,12 +30,8 @@ class ListByMonthTransactionService {
 
       // Define o último dia do mês da data fornecida
       const endDate = new Date(
-        Date.UTC(providedDate.getUTCFullYear(), providedDate.getUTCMonth() + 1, 0)
+        Date.UTC(providedDate.getUTCFullYear(), providedDate.getUTCMonth() + 1, 1)
       );
-
-      console.log(providedDate, "providedDate");
-      console.log(startDate, "startDate");
-      console.log(endDate, "endDate");
 
       // Busca todas as transações no mês especificado e do usuário especificado
       const transactions = await prismaClient.transaction.findMany({
@@ -73,7 +79,7 @@ class ListByMonthTransactionService {
       }));
     } catch (error) {
       console.error("Error fetching transactions by month and user:", error);
-      return { error: "Internal server error" };
+      return { error: "Error fetching transactions by month" };
     }
   }
 }

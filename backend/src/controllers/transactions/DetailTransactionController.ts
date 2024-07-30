@@ -4,9 +4,17 @@ import { TransactionType } from "../../types/databaseTypes";
 
 class DetailTransactionController {
   async handle(req: Request<{}, {}, TransactionType>, res: Response) {
-    const { id } = req.body;
-
     const userId = req.user_id;
+
+    const idTransaction = req.headers["id-transaction"]; // Supondo que o cabeçalho com a data
+
+    console.log(idTransaction);
+
+    if (!idTransaction) {
+      return res.status(400).json({ error: "idTransaction header is missing" });
+    }
+
+    const id = Number(idTransaction);
 
     const detailTransactionService = new DetailTransactionService();
 
