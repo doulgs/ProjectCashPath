@@ -23,35 +23,19 @@ export default function Summary() {
   const { listMonth } = transactionsService();
 
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [transactions, setTransactions] = useState<SectionTransaction[]>([]);
   const monthSelectorRef = useRef<MonthSelectorHandle>(null);
 
   const handleMonthChange = (date: Date) => {
+    // Lógica para recarregar os dados com base no mês selecionado
+    // Aqui você pode adicionar a lógica para buscar dados do servidor ou atualizar o estado local com os novos dados
     setSelectedDate(date);
   };
 
   const handleCurrentMonth = () => {
     monthSelectorRef.current?.setToCurrentMonth();
-  };
-
-  const fetchTransactions = async () => {
-    setIsLoading(true);
-    try {
-      const token = await useToken().getToken();
-
-      if (!token) {
-        throw new Error("Token not found");
-      }
-
-      const result = await listMonth(selectedDate, token);
-      setTransactions(result);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   useLayoutEffect(() => {
@@ -82,8 +66,26 @@ export default function Summary() {
   }, [navigation, selectedDate]);
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    async function fetch() {
+      try {
+        const token = await useToken().getToken();
+
+        if (!token) {
+          throw new Error("Token not found");
+        }
+
+        const result = await listMonth(selectedDate, token);
+
+        setTransactions(result);
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+    }
+
+    fetch();
+  }, [selectedDate]);
 
   if (isLoading) {
     return <Loading />;
