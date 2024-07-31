@@ -54,6 +54,9 @@ class ListByMonthTransactionService {
         return [];
       }
 
+      // Ordena as transações pela data em ordem decrescente (mais recente primeiro)
+      transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+
       // Agrupa as transações pela data
       const groupedTransactions = transactions.reduce((acc, transaction) => {
         const date = transaction.date.toISOString().split("T")[0]; // Formato 'YYYY-MM-DD'
