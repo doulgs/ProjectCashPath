@@ -33,8 +33,11 @@ class ListByDayTransactionService {
 
       // Verifica se foram encontradas transações
       if (transactions.length === 0) {
-        return { error: "No transactions found for the specified date" };
+        return [];
       }
+      /* if (transactions.length === 0) {
+        return { error: "No transactions found for the specified date" };
+      } */
 
       // Agrupa as transações pela data
       const groupedTransactions = transactions.reduce((acc, transaction) => {

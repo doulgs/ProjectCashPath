@@ -22,8 +22,11 @@ class DetailTransactionService {
 
       // Verifica se a transação foi encontrada
       if (!transaction) {
-        return { error: "Transaction not found" };
+        return [];
       }
+      /*  if (!transaction) {
+        return { error: "Transaction not found" };
+      } */
 
       // Retorna os dados da transação, conta e categoria
       return {

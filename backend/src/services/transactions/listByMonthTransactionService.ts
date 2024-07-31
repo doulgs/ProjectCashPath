@@ -51,7 +51,7 @@ class ListByMonthTransactionService {
 
       // Verifica se foram encontradas transações
       if (transactions.length === 0) {
-        return { error: "No transactions found for the specified month and user" };
+        return [];
       }
 
       // Agrupa as transações pela data
