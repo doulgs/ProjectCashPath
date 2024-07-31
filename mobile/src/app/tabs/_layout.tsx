@@ -6,11 +6,8 @@ import {
   ArrowRightLeft,
   ChartNoAxesColumn,
   CircleUserRound,
-  Diamond,
   DiamondPlus,
   House,
-  PieChart,
-  PlusSquare,
 } from "lucide-react-native";
 
 export default function TabLayout() {
