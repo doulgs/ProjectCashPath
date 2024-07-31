@@ -1,28 +1,32 @@
-import { useFocusEffect, useNavigation } from "expo-router";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useNavigation } from "expo-router";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
+  Image,
   SafeAreaView,
+  SectionList,
   Text,
   TouchableOpacity,
   View,
-  SectionList,
-  SectionListData,
-  Image,
 } from "react-native";
 
 import { MonthSelector, MonthSelectorHandle } from "@/components/monthSelector";
 
 import { CalendarDays, CalendarSearchIcon, Filter } from "lucide-react-native";
-import { useDatabase } from "@/hooks/Supabase/useDatabase";
-import { Transaction } from "@/types/database";
-import { dateFormatter } from "@/utils/dateFormatter";
+
+import { Loading } from "@/components/loading";
+import { transactionsService } from "@/services/Transactions";
+import { useToken } from "@/storages/useToken";
 import { formatToCurrency } from "@/utils/formatToCurrency";
+import dayjs from "dayjs";
 
 export default function Summary() {
+  const { listMonth } = transactionsService();
+
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [transactions, setTransactions] = useState<SectionTransaction[]>([]);
   const monthSelectorRef = useRef<MonthSelectorHandle>(null);
-  const { transactions, fetchTransactions, loading } = useDatabase();
 
   const handleMonthChange = (date: Date) => {
     setSelectedDate(date);
@@ -32,27 +36,23 @@ export default function Summary() {
     monthSelectorRef.current?.setToCurrentMonth();
   };
 
-  // Definir a tipagem para o objeto agrupado
-  type GroupedTransactions = {
-    [key: string]: Transaction[];
-  };
+  const fetchTransactions = async () => {
+    setIsLoading(true);
+    try {
+      const token = await useToken().getToken();
 
-  const groupedTransactions: GroupedTransactions = transactions.reduce(
-    (acc: GroupedTransactions, transaction: Transaction) => {
-      const date = dateFormatter(transaction.date);
-      if (!acc[date]) {
-        acc[date] = [];
+      if (!token) {
+        throw new Error("Token not found");
       }
-      acc[date].push(transaction);
-      return acc;
-    },
-    {}
-  );
 
-  const sections = Object.keys(groupedTransactions).map((date) => ({
-    title: date,
-    data: groupedTransactions[date],
-  }));
+      const result = await listMonth(selectedDate, token);
+      setTransactions(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useLayoutEffect(() => {
     const currentMonth = new Date().getMonth();
@@ -82,11 +82,11 @@ export default function Summary() {
   }, [navigation, selectedDate]);
 
   useEffect(() => {
-    //fetchTransactions();
+    fetchTransactions();
   }, []);
 
-  if (loading) {
-    return <Text>Carregando...</Text>;
+  if (isLoading) {
+    return <Loading />;
   }
 
   return (
@@ -94,32 +94,35 @@ export default function Summary() {
       <MonthSelector ref={monthSelectorRef} onChange={handleMonthChange} />
 
       <SectionList
-        sections={sections}
-        keyExtractor={(item) => item.id}
+        sections={transactions}
+        keyExtractor={(item, index) => String(item.id)}
         renderItem={({ item }) => (
-          <View className="flex-row bg-zinc-900 rounded-xl m-2 p-4 gap-4">
+          <View className="flex-row bg-zinc-900 items-center rounded-xl m-2 p-4 gap-4">
             <Image
-              source={{ uri: item.accounts.image_url }}
+              source={{ uri: item.account.image_url }}
               resizeMode="contain"
               className="h-12 w-12 rounded-2xl"
             />
             <View className="flex-row flex-1 items-center justify-between">
               <View>
-                <Text className="text-zinc-100 text-xl">{item.title}</Text>
-                <Text className="text-zinc-300 text-sm">{item.categories.name}</Text>
+                <Text className="text-zinc-100 text-xl">{item.description}</Text>
+                <Text className="text-zinc-300 text-sm">{item.category.name}</Text>
+                <Text className="text-zinc-300 text-sm">{item.account.name}</Text>
               </View>
-              <View>
+              <View className="items-end">
                 <Text className="text-zinc-100 text-xl">
-                  {formatToCurrency(item.amount)}
+                  {formatToCurrency(item.value)}
                 </Text>
-                <Text className="text-zinc-300 text-sm">{item.accounts.name}</Text>
+                <Text className="text-zinc-400 text-sm">{item.user.name}</Text>
               </View>
             </View>
           </View>
         )}
         renderSectionHeader={({ section: { title } }) => (
-          <View className="p-2">
-            <Text className="text-zinc-400 font-semibold text-xl">{title}</Text>
+          <View className="w-full items-center justify-center mt-2">
+            <Text className="p-1 bg-zinc-700 text-zinc-400 rounded-lg">
+              {dayjs(title).format("DD/MM/YYYY")}
+            </Text>
           </View>
         )}
       />
