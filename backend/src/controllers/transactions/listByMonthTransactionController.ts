@@ -18,7 +18,7 @@ class ListByMonthTransactionController {
       userId,
     });
 
-    return res.json({ transaction });
+    return res.json(transaction);
   }
 }
 

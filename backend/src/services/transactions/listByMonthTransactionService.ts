@@ -54,29 +54,49 @@ class ListByMonthTransactionService {
         return { error: "No transactions found for the specified month and user" };
       }
 
-      // Formata a resposta com os dados das transações
-      return transactions.map((transaction) => ({
-        id: transaction.id,
-        description: transaction.description,
-        value: transaction.value,
-        date: transaction.date,
-        transactionType: transaction.transactionType,
-        user: {
-          id: transaction.user.id,
-          name: transaction.user.name,
-        },
-        account: {
-          id: transaction.account.id,
-          name: transaction.account.name,
-          image_url: transaction.account.image_url,
-        },
-        category: {
-          id: transaction.category.id,
-          name: transaction.category.name,
-          description: transaction.category.description,
-          image_url: transaction.category.image_url,
-        },
-      }));
+      // Agrupa as transações pela data
+      const groupedTransactions = transactions.reduce((acc, transaction) => {
+        const date = transaction.date.toISOString().split("T")[0]; // Formato 'YYYY-MM-DD'
+
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+
+        acc[date].push({
+          id: transaction.id,
+          description: transaction.description,
+          value: transaction.value,
+          date: transaction.date,
+          transactionType: transaction.transactionType,
+          user: {
+            id: transaction.user.id,
+            name: transaction.user.name,
+          },
+          account: {
+            id: transaction.account.id,
+            name: transaction.account.name,
+            image_url: transaction.account.image_url,
+          },
+          category: {
+            id: transaction.category.id,
+            name: transaction.category.name,
+            description: transaction.category.description,
+            image_url: transaction.category.image_url,
+          },
+        });
+
+        return acc;
+      }, {} as Record<string, any[]>);
+
+      // Formata a resposta no formato desejado
+      const formattedResponse = Object.entries(groupedTransactions).map(
+        ([title, data]) => ({
+          title,
+          data,
+        })
+      );
+
+      return formattedResponse;
     } catch (error) {
       console.error("Error fetching transactions by month and user:", error);
       return { error: "Error fetching transactions by month" };
