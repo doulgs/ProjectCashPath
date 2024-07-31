@@ -97,7 +97,7 @@ export function transactionsService() {
     const dateFormated = dayjs(date).format("YYYY-MM-DD");
 
     try {
-      console.log(dateFormated, token);
+      //console.log(dateFormated, token);
 
       const { data } = await API.get<SectionTransaction[]>(
         `/user/transaction/listMonth`,

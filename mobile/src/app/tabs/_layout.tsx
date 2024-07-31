@@ -48,7 +48,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="summary"
           options={{
-            title: "Lançamentos",
+            title: "",
             tabBarIcon: ({ color }) => <ArrowRightLeft size={24} color={color} />,
           }}
         />
