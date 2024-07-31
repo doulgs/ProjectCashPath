@@ -1,6 +1,5 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
+import { yupResolver } from "@hookform/resolvers/yup";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,11 +14,13 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import { useDatabase } from "@/hooks/Supabase/useDatabase";
+import { useToken } from "@/storages/useToken";
+import { useUserStore } from "@/storages/useUserStore";
 
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { LinearGradient } from "@/components/linearGradient";
+import { Loading } from "@/components/loading";
 
 type FormValues = {
   email: string;
@@ -35,7 +36,10 @@ const schema = yup.object().shape({
 });
 
 export default function App() {
-  const { users, setUser, resetUser, fetchUsers } = useDatabase();
+  const { validateSignIn, getUserDetails, user, loading, error, logout } = useUserStore();
+  const { saveToken, getToken, removeToken } = useToken();
+  const [isLoading, setIsLoading] = useState(true);
+
   const {
     control,
     handleSubmit,
@@ -44,41 +48,45 @@ export default function App() {
     resolver: yupResolver(schema),
   });
 
-  const [isLoadingSignIn, setIsLoadingSignIn] = useState<boolean>(false);
-
   const onSubmit: SubmitHandler<FormValues> = async ({ email, password }: FormValues) => {
-    setIsLoadingSignIn(true);
     try {
-      const usuario = users.find((user) => user.email.trim() === email.trim());
+      const saveData = true;
+      await validateSignIn({ login: email, password });
 
-      if (!usuario) {
-        await fetchUsers();
-        return;
+      if (saveData && user?.token) {
+        saveToken(user.token);
+        router.navigate("/tabs");
       }
-
-      if (usuario.email !== email || usuario.password !== password) {
-        Alert.alert(
-          "Sistema",
-          "Dados invalidos. Por favor, verifique se digitou corretamente. Se o problema persistir, entre em contato com nosso suporte para ajuda.",
-          [{ text: "Suporte", style: "cancel" }, { text: "OK" }]
-        );
-        return;
-      }
-
-      setUser(usuario);
-      router.navigate("/tabs");
     } catch (error) {
-      setIsLoadingSignIn(false);
       Alert.alert("Sistema", `Erro identificado - ${error}`, [{ text: "OK" }]);
     } finally {
-      setIsLoadingSignIn(false);
       Keyboard.dismiss();
     }
   };
 
+  const getInfoUser = async () => {
+    try {
+      const access_token = await getToken();
+      if (access_token) {
+        await getUserDetails(access_token);
+        router.navigate("/tabs");
+      } else {
+        removeToken();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchUsers();
+    getInfoUser();
   }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <LinearGradient>
@@ -140,7 +148,7 @@ export default function App() {
               <View className="mt-2">
                 <Button
                   variant="solid"
-                  isLoading={isLoadingSignIn}
+                  isLoading={loading}
                   onPress={handleSubmit(onSubmit)}
                 >
                   <Button.Title>Acessar</Button.Title>
