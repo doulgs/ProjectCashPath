@@ -69,7 +69,7 @@ export default function App() {
       const access_token = await getToken();
       if (access_token) {
         await getUserDetails(access_token);
-        router.navigate("/tabs");
+        router.navigate("/stacks");
       } else {
         removeToken();
       }
