@@ -77,7 +77,7 @@ const MonthSelector = forwardRef<MonthSelectorHandle, MonthSelectorProps>(
     });
 
     return (
-      <View className="flex-row items-center p-2 bg-zinc-900 border-t border-b border-zinc-800">
+      <View className="flex-row items-center p-2 bg-darkZinc-900">
         <Pressable onPress={handlePrevious} className="p-3">
           <CircleChevronLeft size={24} color="white" />
         </Pressable>
