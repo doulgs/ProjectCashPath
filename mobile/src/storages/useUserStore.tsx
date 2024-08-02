@@ -1,5 +1,7 @@
 import { SessionProps, UserProps, usersService } from "@/services/Users/userService";
+import { router } from "expo-router";
 import { create } from "zustand";
+import { useToken } from "./useToken";
 
 // Definindo o tipo do estado da nossa store
 type UserState = {
@@ -8,7 +10,7 @@ type UserState = {
   error: string | null;
   validateSignIn: (credentials: SessionProps) => Promise<void>;
   getUserDetails: (token: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 // Criando a store com Zustand
@@ -40,7 +42,9 @@ export const useUserStore = create<UserState>((set, get) => ({
   },
 
   // Função para logout
-  logout: () => {
+  logout: async () => {
     set({ user: null, error: null });
+    await useToken().removeToken();
+    router.navigate("/");
   },
 }));
