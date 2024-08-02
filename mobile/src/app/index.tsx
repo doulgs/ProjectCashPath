@@ -55,7 +55,7 @@ export default function App() {
 
       if (saveData && user?.token) {
         saveToken(user.token);
-        router.navigate("/tabs");
+        router.navigate("/stacks");
       }
     } catch (error) {
       Alert.alert("Sistema", `Erro identificado - ${error}`, [{ text: "OK" }]);
