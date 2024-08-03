@@ -1,4 +1,5 @@
 import { colors } from "@/styles/colors";
+import { router } from "expo-router";
 import { BadgePlus, Boxes, CreditCard, LayoutGrid, Wallet } from "lucide-react-native";
 import { ReactNode, useCallback } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
@@ -15,7 +16,7 @@ const listAction: ActionProps[] = [
     id: 1,
     title: "Inserir Movimentação",
     icon: () => <BadgePlus color={colors.zinc[200]} size={28} />,
-    action: () => {},
+    action: () => router.push("/stacks/moviments"),
   },
   {
     id: 2,
