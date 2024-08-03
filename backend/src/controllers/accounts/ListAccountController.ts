@@ -9,7 +9,7 @@ class ListAccountController {
 
     const account = await listAccountService.execute({ userId });
 
-    return res.json({ account });
+    return res.json(account);
   }
 }
 

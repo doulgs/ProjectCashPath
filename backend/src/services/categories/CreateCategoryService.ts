@@ -1,10 +1,10 @@
 import prismaClient from "../../prisma/index";
 import { CategoryType } from "../../types/databaseTypes";
 
-type Category = Pick<CategoryType, "name" | "description" | "imageUrl" | "userId">;
+type Category = Pick<CategoryType, "name" | "description" | "image_url" | "userId">;
 
 class CreateCategoryService {
-  async execute({ name, description, imageUrl, userId }: Category) {
+  async execute({ name, description, image_url, userId }: Category) {
     if (name == "") {
       throw new Error("nome da categoria é obrigatório");
     }
@@ -27,7 +27,7 @@ class CreateCategoryService {
       data: {
         name,
         description,
-        image_url: imageUrl,
+        image_url,
         userId,
       },
       select: {

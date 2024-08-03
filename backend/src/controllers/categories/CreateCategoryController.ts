@@ -4,7 +4,7 @@ import { CategoryType } from "../../types/databaseTypes";
 
 class CreateCategoryController {
   async handle(req: Request<{}, {}, CategoryType>, res: Response) {
-    const { name, description, imageUrl } = req.body;
+    const { name, description, image_url } = req.body;
 
     const userId = req.user_id;
 
@@ -13,7 +13,7 @@ class CreateCategoryController {
     const category = await createCategoryService.execute({
       name,
       description,
-      imageUrl,
+      image_url,
       userId,
     });
 

@@ -29,7 +29,7 @@ export type CategoryType = {
   id: number;
   name: string;
   description?: string;
-  imageUrl?: string;
+  image_url?: string;
   userId: number;
   user: UserType;
   transactions: TransactionType[];
@@ -65,7 +65,7 @@ export type AccountType = {
   userId: number;
   user: UserType;
   isPrivate: boolean;
-  imageUrl?: string;
+  image_url?: string;
   transactions: TransactionType[];
   createdAt: Date | null;
   updatedAt: Date | null;

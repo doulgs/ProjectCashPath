@@ -1,10 +1,10 @@
 import prismaClient from "../../prisma/index";
 import { AccountType } from "../../types/databaseTypes";
 
-type Account = Pick<AccountType, "name" | "balance" | "imageUrl" | "userId">;
+type Account = Pick<AccountType, "name" | "balance" | "image_url" | "userId">;
 
 class CreateAccountService {
-  async execute({ name, balance, imageUrl, userId }: Account) {
+  async execute({ name, balance, image_url, userId }: Account) {
     if (name == "") {
       throw new Error("nome da conta é obrigatório");
     }
@@ -27,7 +27,7 @@ class CreateAccountService {
       data: {
         name,
         balance,
-        image_url: imageUrl,
+        image_url,
         userId,
       },
       select: {

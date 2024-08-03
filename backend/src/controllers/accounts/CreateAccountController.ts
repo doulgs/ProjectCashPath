@@ -4,7 +4,7 @@ import { AccountType } from "../../types/databaseTypes";
 
 class CreateAccountController {
   async handle(req: Request<{}, {}, AccountType>, res: Response) {
-    const { name, balance, imageUrl } = req.body;
+    const { name, balance, image_url } = req.body;
 
     const userId = req.user_id;
 
@@ -13,7 +13,7 @@ class CreateAccountController {
     const account = await createAccountService.execute({
       name,
       balance,
-      imageUrl,
+      image_url,
       userId,
     });
 
