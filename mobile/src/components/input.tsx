@@ -23,7 +23,7 @@ function Input({ children, variant = "flat", className, ...rest }: InputProps) {
   return (
     <View
       className={clsx(
-        "h-[50px] bg-zinc-800 px-4 rounded-2xl",
+        "h-[50px] bg-zinc-800 px-4 rounded-2xl flex-row items-center",
         {
           "border border-zinc-700": variant === "flat",
           "border-b-2 border-primary-200": variant === "outlined",
