@@ -1,7 +1,8 @@
 import axios from "axios";
+import { EXPO_IP_CONNECTION } from "@env";
 
 const API = axios.create({
-  baseURL: "http://192.168.1.63:3333",
+  baseURL: `http://${EXPO_IP_CONNECTION}:3333`,
 });
 
 export { API };
