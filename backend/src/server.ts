@@ -1,8 +1,12 @@
 import express, { Request, Response, NextFunction } from "express";
 import "express-async-errors";
 import cors from "cors";
+import dotenv from "dotenv";
 
 import { router } from "./router";
+
+// Configurar dotenv para carregar as variáveis de ambiente
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -25,8 +29,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-// INICIAR O SERVIDOR EM UM IP
-app.listen(3333, "192.168.1.63", () => console.log("CashPath server online"));
+// Obter o IP do arquivo .env
+const IP_CONNECTION = process.env.IP_CONNECTION || "localhost";
 
-// LOCALHOST
-// app.listen(3333, () => console.log("CashPath server online"));
+// INICIAR O SERVIDOR NO IP OBTIDO DO .ENV
+app.listen(3333, IP_CONNECTION, () =>
+  console.log(`CashPath server online at ${IP_CONNECTION}:3333`)
+);
