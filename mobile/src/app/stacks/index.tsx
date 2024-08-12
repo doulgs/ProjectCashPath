@@ -18,6 +18,7 @@ import { useUserStore } from "@/storages/useUserStore";
 import { colors } from "@/styles/colors";
 
 import { formatToCurrency } from "@/utils/formatToCurrency";
+import HeaderBottomSheet from "@/components/headerBottonSheat";
 
 export default function Home() {
   const sheetRef = useRef<BottomSheet>(null);
@@ -158,11 +159,7 @@ export default function Home() {
         snapPoints={snapPoints}
         onChange={handleSheetChange}
         backgroundStyle={{ backgroundColor: colors.darkZinc[900] }}
-        handleComponent={() => (
-          <View className="w-full items-center pt-4 justify-center">
-            <View className="w-12 h-2 bg-white rounded-full" />
-          </View>
-        )}
+        handleComponent={HeaderBottomSheet}
       >
         <MonthSelector ref={monthSelectorRef} onChange={handleMonthChange} />
         <BottomSheetSectionList
